@@ -1,0 +1,46 @@
+{
+  "name": "roon-browse-poc",
+  "version": "1.0.0",
+  "description": "Roon Library Browser - TypeScript PoC with WebSocket API",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "debug": "DEBUG=1 node dist/index.js",
+    "clean": "rm -rf dist",
+    "format": "prettier --write .",
+    "code-check": "prettier --check . && eslint .",
+    "lint": "eslint --fix"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "cli-table3": "^0.6.3",
+    "debug": "^4.4.3",
+    "node-roon-api": "github:roonlabs/node-roon-api#055dae6c2ac45b6c738aa3b9e5ac1fd722ed60e8",
+    "node-roon-api-browse": "github:roonlabs/node-roon-api-browse#98adcbaba3a30fd6ce109c1f04cd361536143222",
+    "node-roon-api-image": "github:roonlabs/node-roon-api-image#a5f0efaf2dfb5457e91abe326c3a40d865131d32",
+    "node-roon-api-status": "github:roonlabs/node-roon-api-status#504c918d6da267e03fbb4337befa71ca3d3c7526",
+    "node-roon-api-transport": "github:roonlabs/node-roon-api-transport#2ee60008a4cdb90c34ff3de58bb4b949067f1d20",
+    "prompts": "^2.4.2",
+    "ws": "^8.19.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "@types/prompts": "^2.4.9",
+    "@types/ws": "^8.18.1",
+    "@types/yargs": "^17.0.32",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "neostandard": "^0.12.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.26.0"
+  }
+}
