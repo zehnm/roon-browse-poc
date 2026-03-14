@@ -1,41 +1,29 @@
 import type RoonApiBrowse from "node-roon-api-browse";
-import type {
-  ImageConfig,
-  BrowseItemExtended,
-  BrowseResult,
-  LoadResult,
-  BrowseItem,
-} from "../types/config";
+import type { ImageConfig, BrowseItemExtended, BrowseResult, LoadResult, BrowseItem } from "../types/config.js";
 
 export class BrowseService {
   constructor(
     private browseApi: typeof RoonApiBrowse.prototype,
     private imageConfig: ImageConfig,
     private coreIp: string,
-    private roonPort: number,
+    private roonPort: number
   ) {}
 
   async browse(opts: any): Promise<BrowseResult> {
     return new Promise((resolve, reject) => {
-      (this.browseApi as any).browse(
-        opts,
-        (err: string | false, result: BrowseResult) => {
-          if (err) reject(new Error(err));
-          else resolve(result);
-        },
-      );
+      (this.browseApi as any).browse(opts, (err: string | false, result: BrowseResult) => {
+        if (err) reject(new Error(err));
+        else resolve(result);
+      });
     });
   }
 
   async load(opts: any): Promise<LoadResult> {
     return new Promise((resolve, reject) => {
-      (this.browseApi as any).load(
-        opts,
-        (err: string | false, result: LoadResult) => {
-          if (err) reject(new Error(err));
-          else resolve(result);
-        },
-      );
+      (this.browseApi as any).load(opts, (err: string | false, result: LoadResult) => {
+        if (err) reject(new Error(err));
+        else resolve(result);
+      });
     });
   }
 
@@ -50,9 +38,7 @@ export class BrowseService {
       subtitle: item.subtitle,
       itemKey: item.item_key,
       hint: item.hint,
-      artworkUrl: item.image_key
-        ? this.buildImageUrl(item.image_key)
-        : undefined,
+      artworkUrl: item.image_key ? this.buildImageUrl(item.image_key) : undefined
     }));
   }
 }

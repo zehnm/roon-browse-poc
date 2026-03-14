@@ -1,30 +1,22 @@
 import type RoonApiBrowse from "node-roon-api-browse";
 import type RoonApiTransport from "node-roon-api-transport";
-import { BrowseService } from "./services/browse.service";
-import { TransportService } from "./services/transport.service";
-import { Logger } from "./utils/logger";
-import {
-  selectItemInteractive,
-  selectZoneInteractive,
-} from "./utils/cli-input";
-import type { AppConfig, Zone } from "./types/config";
+import { BrowseService } from "./services/browse.service.js";
+import { TransportService } from "./services/transport.service.js";
+import { Logger } from "./utils/logger.js";
+import { selectItemInteractive, selectZoneInteractive } from "./utils/cli-input.js";
+import type { AppConfig, Zone } from "./types/config.js";
 
 export class InteractiveBrowser {
   private browseService: BrowseService;
   private transportService: TransportService;
-  private selectedZone: Zone | null = null;
+  private selectedZone: Zone | null | undefined = null;
 
   constructor(
     private browseApi: typeof RoonApiBrowse.prototype,
     private transportApi: typeof RoonApiTransport.prototype,
-    private config: AppConfig,
+    private config: AppConfig
   ) {
-    this.browseService = new BrowseService(
-      browseApi,
-      config.imageConfig,
-      config.coreIp!,
-      config.roonPort,
-    );
+    this.browseService = new BrowseService(browseApi, config.imageConfig, config.coreIp!, config.roonPort);
     this.transportService = new TransportService(transportApi);
   }
 
@@ -40,14 +32,10 @@ export class InteractiveBrowser {
       this.selectedZone = found;
       Logger.success(`Using specified zone: ${found.display_name}`);
     } else if (zones.length === 0) {
-      Logger.warn(
-        "No zones available on this Roon Core. Playback will not be possible.",
-      );
+      Logger.warn("No zones available on this Roon Core. Playback will not be possible.");
     } else if (zones.length === 1) {
       this.selectedZone = zones[0];
-      Logger.success(
-        `Auto-selected only available zone: ${this.selectedZone.display_name}`,
-      );
+      Logger.success(`Auto-selected only available zone: ${this.selectedZone?.display_name}`);
     } else {
       const zoneId = await selectZoneInteractive(zones, "Select a zone:");
       this.selectedZone = zones.find((z) => z.zone_id === zoneId)!;
@@ -57,13 +45,12 @@ export class InteractiveBrowser {
 
   async browse(): Promise<void> {
     // if (!this.selectedZone) throw new Error('No zone selected. Call initializeZone() first.');
-    // const zone_or_output_id = this.selectedZone?.zone_id;
 
     // Reset browse stack to root
     const rootResult = await this.browseService.browse({
       hierarchy: "browse",
       pop_all: true,
-      zone_or_output_id: this.selectedZone?.zone_id,
+      zone_or_output_id: this.selectedZone?.zone_id
     });
 
     if (rootResult.action !== "list" || !rootResult.list) {
@@ -74,35 +61,24 @@ export class InteractiveBrowser {
       const loadResult = await this.browseService.load({
         hierarchy: "browse",
         offset: 0,
-        count: this.config.limit,
+        count: this.config.limit
       });
 
-      const extended = this.browseService.extendItemsWithArtwork(
-        loadResult.items,
-      );
-      Logger.printBrowseResults(
-        extended,
-        loadResult.list.title || "Items",
-        loadResult.list.count,
-      );
+      const extended = this.browseService.extendItemsWithArtwork(loadResult.items);
+      Logger.printBrowseResults(extended, loadResult.list.title || "Items", loadResult.list.count);
 
       // Stop after last level
       if (level >= this.config.levels - 1) break;
 
       // Only offer drillable (list-type) items for navigation
-      const drillable = extended.filter(
-        (item) => item.hint === "list" && item.itemKey,
-      );
+      const drillable = extended.filter((item) => item.hint === "list" && item.itemKey);
 
       if (drillable.length === 0) {
         Logger.warn("No drillable items at this level. Stopping.");
         break;
       }
 
-      const selectedIdx = await selectItemInteractive(
-        drillable,
-        `Level ${level + 1}: select item to drill into:`,
-      );
+      const selectedIdx = await selectItemInteractive(drillable, `Level ${level + 1}: select item to drill into:`);
 
       const selected = drillable[selectedIdx];
       if (!selected) {
@@ -113,13 +89,11 @@ export class InteractiveBrowser {
       const drillResult = await this.browseService.browse({
         hierarchy: "browse",
         item_key: selected.itemKey,
-        zone_or_output_id: this.selectedZone?.zone_id,
+        zone_or_output_id: this.selectedZone?.zone_id
       });
 
       if (drillResult.action !== "list") {
-        Logger.warn(
-          `Unexpected drill result action: ${drillResult.action}. Stopping.`,
-        );
+        Logger.warn(`Unexpected drill result action: ${drillResult.action}. Stopping.`);
         break;
       }
     }

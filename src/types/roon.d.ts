@@ -12,16 +12,9 @@ declare module "node-roon-api" {
       core_paired?: (core: RoonCore) => Promise<void>;
       core_unpaired?: (core: RoonCore) => void;
     });
-    init_services(opts: {
-      required_services?: unknown[];
-      provided_services?: unknown[];
-    }): void;
+    init_services(opts: { required_services?: unknown[]; provided_services?: unknown[] }): void;
     start_discovery(): void;
-    ws_connect(opts: {
-      host: string;
-      port: number;
-      onclose?: () => void;
-    }): void;
+    ws_connect(opts: { host: string; port: number; onclose?: () => void }): void;
   }
 
   interface RoonCore {
@@ -31,7 +24,7 @@ declare module "node-roon-api" {
     services: Record<string, unknown>;
   }
 
-  export = RoonApi;
+  export default RoonApi;
 }
 
 declare module "node-roon-api-browse" {
@@ -39,7 +32,7 @@ declare module "node-roon-api-browse" {
     browse(opts: any, cb: (err: string | false, result: any) => void): void;
     load(opts: any, cb: (err: string | false, result: any) => void): void;
   }
-  export = RoonApiBrowse;
+  export default RoonApiBrowse;
 }
 
 declare module "node-roon-api-transport" {
@@ -54,13 +47,9 @@ declare module "node-roon-api-transport" {
   class RoonApiTransport {
     subscribe_zones(cb: (err: string | false, msg: any) => void): void;
     get_zones(cb: (zones: Zone[]) => void): void;
-    control(
-      zone: Zone,
-      action: string,
-      cb?: (err: string | false) => void,
-    ): void;
+    control(zone: Zone, action: string, cb?: (err: string | false) => void): void;
   }
-  export = RoonApiTransport;
+  export default RoonApiTransport;
 }
 
 declare module "node-roon-api-image" {
@@ -73,10 +62,10 @@ declare module "node-roon-api-image" {
         height?: number;
         format?: string;
       },
-      cb: (err: string | false, contentType: string, buffer: Buffer) => void,
+      cb: (err: string | false, contentType: string, buffer: Buffer) => void
     ): void;
   }
-  export = RoonApiImage;
+  export default RoonApiImage;
 }
 
 declare module "node-roon-api-status" {
@@ -84,5 +73,5 @@ declare module "node-roon-api-status" {
     constructor(roon: unknown);
     set_status(message: string, is_error: boolean): void;
   }
-  export = RoonApiStatus;
+  export default RoonApiStatus;
 }

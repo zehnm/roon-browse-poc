@@ -6,22 +6,22 @@ import globals from "globals";
 
 export default tseslint.config(
   {
-    ignores: ["dist/**/*", "node_modules/**/*", "package-lock.json"],
+    ignores: ["dist/**/*", "node_modules/**/*", "package-lock.json"]
   },
   ...neostandard({
     semi: true,
-    ts: true,
+    ts: true
   }),
   ...tseslint.configs.recommended,
   {
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.es2022,
-      },
+        ...globals.es2022
+      }
     },
     plugins: {
-      prettier: prettierPlugin,
+      prettier: prettierPlugin
     },
     rules: {
       "prettier/prettier": [
@@ -31,16 +31,16 @@ export default tseslint.config(
           trailingComma: "none",
           singleQuote: false,
           printWidth: 120,
-          endOfLine: "auto",
-        },
+          endOfLine: "auto"
+        }
       ],
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": ["warn", { args: "none" }],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-unsafe-function-type": "off",
-      "@typescript-eslint/no-wrapper-object-types": "off",
-    },
+      "@typescript-eslint/no-wrapper-object-types": "off"
+    }
   },
   {
     files: ["types/**/*.d.ts"],
@@ -49,8 +49,8 @@ export default tseslint.config(
       "import-x/export": "off",
       "import-x/no-duplicates": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-    },
+      "@typescript-eslint/no-unused-vars": "off"
+    }
   },
-  prettierConfig,
+  prettierConfig
 );

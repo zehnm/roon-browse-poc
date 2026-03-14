@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import Table from "cli-table3";
-import type { BrowseItemExtended } from "../types/config";
+import type { BrowseItemExtended } from "../types/config.js";
 
 const DEBUG_MODE = process.env.DEBUG === "1" || process.env.DEBUG === "true";
 
@@ -39,13 +39,11 @@ export class Logger {
     console.log("\n" + chalk.bold.cyan(`\n━━━ ${title} ━━━\n`));
   }
 
-  static printZones(
-    zones: Array<{ zone_id: string; display_name: string }>,
-  ): void {
+  static printZones(zones: Array<{ zone_id: string; display_name: string }>): void {
     const table = new Table({
       head: [chalk.bold("Zone ID"), chalk.bold("Display Name")],
       colWidths: [36, 40],
-      wordWrap: true,
+      wordWrap: true
     });
     zones.forEach((zone) => {
       table.push([zone.zone_id, zone.display_name]);
@@ -53,11 +51,7 @@ export class Logger {
     console.log(table.toString());
   }
 
-  static printBrowseResults(
-    items: BrowseItemExtended[],
-    listTitle: string,
-    totalCount: number,
-  ): void {
+  static printBrowseResults(items: BrowseItemExtended[], listTitle: string, totalCount: number): void {
     this.section(`${listTitle} (${items.length}/${totalCount} items)`);
 
     const table = new Table({
@@ -66,10 +60,10 @@ export class Logger {
         chalk.bold("Title"),
         chalk.bold("Subtitle"),
         chalk.bold("Type"),
-        chalk.bold("Artwork URL"),
+        chalk.bold("Artwork URL")
       ],
       colWidths: [4, 30, 25, 12, 55],
-      wordWrap: true,
+      wordWrap: true
     });
 
     items.forEach((item, index) => {
@@ -78,7 +72,7 @@ export class Logger {
         item.title || "-",
         item.subtitle || "-",
         chalk.cyan(item.hint || "unknown"),
-        item.artworkUrl ? chalk.blue(item.artworkUrl) : chalk.gray("(none)"),
+        item.artworkUrl ? chalk.blue(item.artworkUrl) : chalk.gray("(none)")
       ]);
     });
 
