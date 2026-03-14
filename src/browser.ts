@@ -1,10 +1,11 @@
 import type RoonApiBrowse from "node-roon-api-browse";
 import type RoonApiTransport from "node-roon-api-transport";
+import { type Zone } from "node-roon-api-transport";
 import { BrowseService } from "./services/browse.service.js";
 import { TransportService } from "./services/transport.service.js";
 import { Logger } from "./utils/logger.js";
 import { selectItemInteractive, selectZoneInteractive } from "./utils/cli-input.js";
-import type { AppConfig, Zone } from "./types/config.js";
+import type { AppConfig } from "./types/config.js";
 
 export class InteractiveBrowser {
   private browseService: BrowseService;
@@ -12,8 +13,8 @@ export class InteractiveBrowser {
   private selectedZone: Zone | null | undefined = null;
 
   constructor(
-    private browseApi: typeof RoonApiBrowse.prototype,
-    private transportApi: typeof RoonApiTransport.prototype,
+    private browseApi: RoonApiBrowse,
+    private transportApi: RoonApiTransport,
     private config: AppConfig,
   ) {
     this.browseService = new BrowseService(browseApi, config.imageConfig, config.coreIp!, config.roonPort);

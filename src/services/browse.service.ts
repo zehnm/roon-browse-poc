@@ -1,28 +1,41 @@
-import type RoonApiBrowse from "node-roon-api-browse";
-import type { ImageConfig, BrowseItemExtended, BrowseResult, LoadResult, BrowseItem } from "../types/config.js";
+import RoonApiBrowse from "node-roon-api-browse";
+import type {
+  Item,
+  RoonApiBrowseLoadOptions,
+  RoonApiBrowseLoadResponse,
+  RoonApiBrowseOptions,
+  RoonApiBrowseResponse,
+} from "node-roon-api-browse";
+import type { ImageConfig, BrowseItem } from "../types/config.js";
 
 export class BrowseService {
   constructor(
-    private browseApi: typeof RoonApiBrowse.prototype,
+    private browseApi: RoonApiBrowse,
     private imageConfig: ImageConfig,
     private coreIp: string,
     private roonPort: number,
   ) {}
 
-  async browse(opts: any): Promise<BrowseResult> {
+  browse(opts: RoonApiBrowseOptions): Promise<RoonApiBrowseResponse> {
     return new Promise((resolve, reject) => {
-      (this.browseApi as any).browse(opts, (err: string | false, result: BrowseResult) => {
-        if (err) reject(new Error(err));
-        else resolve(result);
+      this.browseApi.browse(opts, (err, result) => {
+        if (err) {
+          reject(new Error(err));
+          return;
+        }
+        resolve(result);
       });
     });
   }
 
-  async load(opts: any): Promise<LoadResult> {
+  load(opts: RoonApiBrowseLoadOptions): Promise<RoonApiBrowseLoadResponse> {
     return new Promise((resolve, reject) => {
-      (this.browseApi as any).load(opts, (err: string | false, result: LoadResult) => {
-        if (err) reject(new Error(err));
-        else resolve(result);
+      this.browseApi.load(opts, (err, result) => {
+        if (err) {
+          reject(new Error(err));
+          return;
+        }
+        resolve(result);
       });
     });
   }
@@ -32,7 +45,7 @@ export class BrowseService {
     return `http://${this.coreIp}:${this.roonPort}/api/image/${imageKey}?scale=${scale}&width=${width}&height=${height}&format=${encodeURIComponent(format)}`;
   }
 
-  extendItemsWithArtwork(items: BrowseItem[]): BrowseItemExtended[] {
+  extendItemsWithArtwork(items: Item[]): BrowseItem[] {
     return items.map((item) => ({
       title: item.title,
       subtitle: item.subtitle,

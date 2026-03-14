@@ -1,51 +1,33 @@
 import type RoonApiTransport from "node-roon-api-transport";
-import type { Zone } from "../types/config.js";
+import type { RoonApiTransportZones, Zone } from "node-roon-api-transport";
 
 export class TransportService {
-  constructor(private transportApi: typeof RoonApiTransport.prototype) {}
+  constructor(private transportApi: RoonApiTransport) {}
 
   async getZones(): Promise<Zone[]> {
     return new Promise((resolve, reject) => {
-      let resolved = false;
+      let settled = false;
 
-      (this.transportApi as any).subscribe_zones((messageOrErr: string | false | { zones?: Zone[] }, data?: any) => {
+      this.transportApi.subscribe_zones((response, body: RoonApiTransportZones) => {
         // Roon subscription callback pattern:
         // First call:    ('Subscribed', { zones: [...] })
         // Updates:       ({ zones: [...] })
         // Errors:        ('ErrorMessage')
-
-        // Check if this is an actual error (string that's not "Subscribed")
-        if (typeof messageOrErr === "string" && messageOrErr !== "Subscribed") {
-          if (!resolved) {
-            resolved = true;
-            reject(new Error(messageOrErr));
-          }
+        if (settled) {
           return;
         }
 
-        // Extract zones from either parameter
-        let zones: Zone[] | undefined;
-
-        if (typeof messageOrErr === "object" && messageOrErr.zones) {
-          // Second form: zones in first parameter
-          zones = messageOrErr.zones;
-        } else if (data && typeof data === "object" && data.zones) {
-          // First form: zones in second parameter
-          zones = data.zones;
+        if (response === "Unsubscribed") {
+          settled = true;
+          reject(new Error("Zone subscription ended before zones were received"));
+          return;
         }
 
-        // Process zones if we got them
-        if (zones && !resolved) {
+        const zones = body.zones;
+        if (zones) {
+          settled = true;
           resolve(zones);
-          // resolved = true;
-          // if (zones.length === 0) {
-          //   reject(new Error('No zones available on this Roon Core'));
-          // } else {
-          //   resolve(zones);
-          // }
         }
-
-        // Ignore subsequent subscription updates
       });
     });
   }

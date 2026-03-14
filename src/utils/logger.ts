@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import Table from "cli-table3";
-import type { BrowseItemExtended } from "../types/config.js";
+import type { BrowseItem } from "../types/config.js";
 
 const DEBUG_MODE = process.env.DEBUG === "1" || process.env.DEBUG === "true";
 
@@ -51,7 +51,7 @@ export class Logger {
     console.log(table.toString());
   }
 
-  static printBrowseResults(items: BrowseItemExtended[], listTitle: string, totalCount: number): void {
+  static printBrowseResults(items: BrowseItem[], listTitle: string, totalCount: number): void {
     this.section(`${listTitle} (${items.length}/${totalCount} items)`);
 
     const table = new Table({

@@ -21,50 +21,14 @@ export interface AppConfig extends CliArgs {
   selectedZoneId?: string;
 }
 
-export interface BrowseItemExtended {
-  title: string;
-  subtitle?: string;
-  itemKey?: string;
-  hint?: string;
-  artworkUrl?: string;
-}
-
-export interface BrowseResult {
-  action: "none" | "list" | "message" | "replace_item" | "remove_item";
-  list?: {
-    title: string;
-    subtitle?: string;
-    count: number;
-    level: number;
-    display_offset?: number;
-  };
-  item?: any;
-  message?: string;
-  is_error?: boolean;
-}
-
-export interface LoadResult {
-  items: BrowseItem[];
-  offset: number;
-  list: {
-    title: string;
-    count: number;
-    level: number;
-  };
-}
-
+/**
+ * An extended version of the Roon API browse item.
+ * Includes the artwork URL and the item key.
+ */
 export interface BrowseItem {
   title: string;
   subtitle?: string;
-  image_key?: string;
-  item_key?: string;
-  hint?: "action" | "action_list" | "list" | "header";
-}
-
-export interface Zone {
-  zone_id: string;
-  display_name: string;
-  outputs: any[];
-  state: "playing" | "paused" | "loading" | "stopped";
-  [key: string]: any;
+  itemKey?: string;
+  hint?: string | null;
+  artworkUrl?: string;
 }

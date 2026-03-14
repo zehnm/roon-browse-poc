@@ -4,6 +4,7 @@ import WebSocket from "ws";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import RoonApi from "node-roon-api";
+import type { RoonApiOptions, RoonCore } from "node-roon-api";
 import RoonApiBrowse from "node-roon-api-browse";
 import RoonApiTransport from "node-roon-api-transport";
 import RoonApiImage from "node-roon-api-image";
@@ -76,7 +77,7 @@ async function parseArgs(): Promise<CliArgs> {
   };
 }
 
-async function runWithCore(core: any, args: CliArgs): Promise<void> {
+async function runWithCore(core: RoonCore, args: CliArgs): Promise<void> {
   Logger.debug(`Core object keys: ${Object.keys(core).join(", ")}`);
   Logger.debug(`Core services: ${Object.keys(core.services).join(", ")}`);
   Logger.debug(`Core display_name: ${core.display_name}`);
@@ -126,7 +127,6 @@ async function main(): Promise<void> {
   Logger.debug("=== Roon Browse PoC Starting ===");
   Logger.debug(`Node.js version: ${process.version}`);
   Logger.debug(`Platform: ${process.platform}`);
-  Logger.debug(`WebSocket global type: ${typeof (global as any).WebSocket}`);
 
   const args = await parseArgs();
   Logger.debug(`CLI args: ${JSON.stringify(args)}`);
@@ -142,7 +142,7 @@ async function main(): Promise<void> {
 
   try {
     // Build options object conditionally based on mode
-    const roonOptions: any = {
+    const roonOptions: RoonApiOptions = {
       extension_id: "com.example.roon-browse-poc",
       display_name: "Roon Browse PoC",
       display_version: "1.0.0",
@@ -157,7 +157,7 @@ async function main(): Promise<void> {
       const port = args.port || ROON_API_PORT;
       Logger.info(`Connecting to ${args.core}:${port}...`);
 
-      roonOptions.core_paired = async (core: any) => {
+      roonOptions.core_paired = async (core: RoonCore) => {
         Logger.debug(">>> core_paired callback invoked <<<");
 
         if (coreReady) {
@@ -184,7 +184,7 @@ async function main(): Promise<void> {
         process.exit(0);
       };
 
-      roonOptions.core_unpaired = (core: any) => {
+      roonOptions.core_unpaired = (core: RoonCore) => {
         Logger.debug(">>> core_unpaired callback invoked <<<");
         Logger.warn(`Core unpaired: ${core.display_name}`);
         if (coreReady) {
@@ -196,7 +196,7 @@ async function main(): Promise<void> {
       // DISCOVERY MODE: UDP discovery (core_found + core_lost ONLY)
       Logger.info("Using UDP discovery mode (recommended)");
 
-      roonOptions.core_found = (core: any) => {
+      roonOptions.core_found = (core: RoonCore) => {
         Logger.debug(">>> core_found callback invoked <<<");
         Logger.debug(`Discovered core: ${core.display_name} (${core.display_version})`);
         discoveredCoreInfo = {
@@ -205,7 +205,7 @@ async function main(): Promise<void> {
         };
       };
 
-      roonOptions.core_lost = (core: any) => {
+      roonOptions.core_lost = (core: RoonCore) => {
         Logger.debug(">>> core_lost callback invoked <<<");
         Logger.warn(`Core lost: ${core.display_name}`);
         if (coreReady) {

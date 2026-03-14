@@ -1,10 +1,12 @@
 import type RoonApiBrowse from "node-roon-api-browse";
+import { type Item } from "node-roon-api-browse";
 import type RoonApiTransport from "node-roon-api-transport";
+import { type Zone } from "node-roon-api-transport";
 import { BrowseService } from "./services/browse.service.js";
 import { TransportService } from "./services/transport.service.js";
 import { Logger } from "./utils/logger.js";
 import { selectZoneInteractive } from "./utils/cli-input.js";
-import type { AppConfig, Zone, BrowseItem } from "./types/config.js";
+import type { AppConfig } from "./types/config.js";
 
 export class PlaybackHandler {
   private browseService: BrowseService;
@@ -12,8 +14,8 @@ export class PlaybackHandler {
   private selectedZone: Zone | null | undefined = null;
 
   constructor(
-    private browseApi: typeof RoonApiBrowse.prototype,
-    private transportApi: typeof RoonApiTransport.prototype,
+    private browseApi: RoonApiBrowse,
+    private transportApi: RoonApiTransport,
     private config: AppConfig,
   ) {
     this.browseService = new BrowseService(browseApi, config.imageConfig, config.coreIp!, config.roonPort);
@@ -65,13 +67,11 @@ export class PlaybackHandler {
 
     // Prefer "Play Now", fall back to any action containing "play"
     const playAction =
-      loadResult.items.find(
-        (item: BrowseItem) => item.hint === "action" && item.title?.toLowerCase().includes("play now"),
-      ) ??
-      loadResult.items.find((item: BrowseItem) => item.hint === "action" && item.title?.toLowerCase().includes("play"));
+      loadResult.items.find((item: Item) => item.hint === "action" && item.title?.toLowerCase().includes("play now")) ??
+      loadResult.items.find((item: Item) => item.hint === "action" && item.title?.toLowerCase().includes("play"));
 
     if (!playAction?.item_key) {
-      const available = loadResult.items.map((i: BrowseItem) => i.title).join(", ");
+      const available = loadResult.items.map((i: Item) => i.title).join(", ");
       throw new Error(`No play action found. Available actions: ${available}`);
     }
 
