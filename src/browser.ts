@@ -14,7 +14,7 @@ export class InteractiveBrowser {
   constructor(
     private browseApi: typeof RoonApiBrowse.prototype,
     private transportApi: typeof RoonApiTransport.prototype,
-    private config: AppConfig
+    private config: AppConfig,
   ) {
     this.browseService = new BrowseService(browseApi, config.imageConfig, config.coreIp!, config.roonPort);
     this.transportService = new TransportService(transportApi);
@@ -50,7 +50,7 @@ export class InteractiveBrowser {
     const rootResult = await this.browseService.browse({
       hierarchy: "browse",
       pop_all: true,
-      zone_or_output_id: this.selectedZone?.zone_id
+      zone_or_output_id: this.selectedZone?.zone_id,
     });
 
     if (rootResult.action !== "list" || !rootResult.list) {
@@ -61,7 +61,7 @@ export class InteractiveBrowser {
       const loadResult = await this.browseService.load({
         hierarchy: "browse",
         offset: 0,
-        count: this.config.limit
+        count: this.config.limit,
       });
 
       const extended = this.browseService.extendItemsWithArtwork(loadResult.items);
@@ -89,7 +89,7 @@ export class InteractiveBrowser {
       const drillResult = await this.browseService.browse({
         hierarchy: "browse",
         item_key: selected.itemKey,
-        zone_or_output_id: this.selectedZone?.zone_id
+        zone_or_output_id: this.selectedZone?.zone_id,
       });
 
       if (drillResult.action !== "list") {

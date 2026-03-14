@@ -14,7 +14,7 @@ export class PlaybackHandler {
   constructor(
     private browseApi: typeof RoonApiBrowse.prototype,
     private transportApi: typeof RoonApiTransport.prototype,
-    private config: AppConfig
+    private config: AppConfig,
   ) {
     this.browseService = new BrowseService(browseApi, config.imageConfig, config.coreIp!, config.roonPort);
     this.transportService = new TransportService(transportApi);
@@ -49,7 +49,7 @@ export class PlaybackHandler {
     const browseResult = await this.browseService.browse({
       hierarchy: "browse",
       item_key: itemKey,
-      zone_or_output_id: this.selectedZone.zone_id
+      zone_or_output_id: this.selectedZone.zone_id,
     });
 
     if (browseResult.action !== "list") {
@@ -60,13 +60,13 @@ export class PlaybackHandler {
     const loadResult = await this.browseService.load({
       hierarchy: "browse",
       offset: 0,
-      count: 20
+      count: 20,
     });
 
     // Prefer "Play Now", fall back to any action containing "play"
     const playAction =
       loadResult.items.find(
-        (item: BrowseItem) => item.hint === "action" && item.title?.toLowerCase().includes("play now")
+        (item: BrowseItem) => item.hint === "action" && item.title?.toLowerCase().includes("play now"),
       ) ??
       loadResult.items.find((item: BrowseItem) => item.hint === "action" && item.title?.toLowerCase().includes("play"));
 
@@ -80,7 +80,7 @@ export class PlaybackHandler {
     const execResult = await this.browseService.browse({
       hierarchy: "browse",
       item_key: playAction.item_key,
-      zone_or_output_id: this.selectedZone.zone_id
+      zone_or_output_id: this.selectedZone.zone_id,
     });
 
     if (execResult.action === "none") {

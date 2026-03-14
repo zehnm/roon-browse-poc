@@ -2,18 +2,18 @@ import prompts from "prompts";
 
 export async function selectItemInteractive(
   items: Array<{ title: string; itemKey?: string }>,
-  message: string
+  message: string,
 ): Promise<number> {
   const choices = items.map((item, idx) => ({
     title: item.title,
-    value: idx
+    value: idx,
   }));
 
   const response = await prompts({
     type: "select",
     name: "index",
     message,
-    choices
+    choices,
   });
 
   if (response.index === undefined) {
@@ -25,18 +25,18 @@ export async function selectItemInteractive(
 
 export async function selectZoneInteractive(
   zones: Array<{ zone_id: string; display_name: string }>,
-  message: string
+  message: string,
 ): Promise<string> {
   const choices = zones.map((zone) => ({
     title: zone.display_name,
-    value: zone.zone_id
+    value: zone.zone_id,
   }));
 
   const response = await prompts({
     type: "select",
     name: "zoneId",
     message,
-    choices
+    choices,
   });
 
   if (!response.zoneId) {

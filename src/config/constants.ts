@@ -4,7 +4,7 @@ export const IMAGE_CONFIG: ImageConfig = {
   width: 300,
   height: 300,
   scale: "fit",
-  format: "image/jpeg"
+  format: "image/jpeg",
 };
 
 export const ROON_API_PORT = 9330; // Default WebSocket API port (dynamic, but 9330 is typical)

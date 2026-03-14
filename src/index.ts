@@ -17,7 +17,7 @@ import {
   ROON_IMAGE_PORT,
   ROON_DISCOVERY_TIMEOUT_MS,
   DEFAULT_BROWSE_LIMIT,
-  DEFAULT_BROWSE_LEVELS
+  DEFAULT_BROWSE_LEVELS,
 } from "./config/constants.js";
 import type { AppConfig, CliArgs } from "./types/config.js";
 (global as any).WebSocket = WebSocket;
@@ -31,34 +31,34 @@ async function parseArgs(): Promise<CliArgs> {
     .option("core", {
       type: "string",
       description: "Roon Core IP address (ADVANCED: only use if discovery fails)",
-      alias: "c"
+      alias: "c",
     })
     .option("port", {
       type: "number",
       description: "Roon Core WebSocket port (ADVANCED: only if hardcoding connection)",
-      alias: "p"
+      alias: "p",
     })
     .option("zone", {
       type: "string",
       description: "Zone ID to use for playback/browse",
-      alias: "z"
+      alias: "z",
     })
     .option("levels", {
       type: "number",
       description: "Number of browse levels to navigate",
       default: DEFAULT_BROWSE_LEVELS,
-      alias: "l"
+      alias: "l",
     })
     .option("limit", {
       type: "number",
       description: "Max items per browse level",
       default: DEFAULT_BROWSE_LIMIT,
-      alias: "n"
+      alias: "n",
     })
     .option("play", {
       type: "string",
       description: "item_key to play instead of browsing",
-      alias: "a"
+      alias: "a",
     })
     .example("$0", "Use UDP discovery (RECOMMENDED)")
     .example("$0 --levels 3 --limit 15", "Browse 3 levels with custom limit")
@@ -72,7 +72,7 @@ async function parseArgs(): Promise<CliArgs> {
     zone: argv.zone,
     levels: argv.levels,
     limit: argv.limit,
-    play: argv.play
+    play: argv.play,
   };
 }
 
@@ -89,7 +89,7 @@ async function runWithCore(core: any, args: CliArgs): Promise<void> {
     ...args,
     coreIp,
     roonPort: ROON_IMAGE_PORT,
-    imageConfig: IMAGE_CONFIG
+    imageConfig: IMAGE_CONFIG,
   };
 
   const browseApi = core.services["RoonApiBrowse"];
@@ -101,13 +101,13 @@ async function runWithCore(core: any, args: CliArgs): Promise<void> {
   if (!browseApi) {
     throw new Error(
       "RoonApiBrowse service not available. Extension may not be enabled in Roon UI. Available services: " +
-        Object.keys(core.services).join(", ")
+        Object.keys(core.services).join(", "),
     );
   }
   if (!transportApi) {
     throw new Error(
       "RoonApiTransport service not available. Extension may not be enabled in Roon UI. Available services: " +
-        Object.keys(core.services).join(", ")
+        Object.keys(core.services).join(", "),
     );
   }
 
@@ -147,7 +147,7 @@ async function main(): Promise<void> {
       display_name: "Roon Browse PoC",
       display_version: "1.0.0",
       publisher: "Example",
-      email: "admin@example.com"
+      email: "admin@example.com",
     };
 
     if (useDirectConnection) {
@@ -201,7 +201,7 @@ async function main(): Promise<void> {
         Logger.debug(`Discovered core: ${core.display_name} (${core.display_version})`);
         discoveredCoreInfo = {
           host: "127.0.0.1", // Discovery-provided cores connect via localhost
-          port: ROON_API_PORT
+          port: ROON_API_PORT,
         };
       };
 
@@ -230,7 +230,7 @@ async function main(): Promise<void> {
 
     roon.init_services({
       required_services: [RoonApiBrowse, RoonApiTransport, RoonApiImage],
-      provided_services: [svcStatus]
+      provided_services: [svcStatus],
     });
     Logger.debug("Services initialized");
 
@@ -260,13 +260,13 @@ async function main(): Promise<void> {
                 `  • Wrong port number (verify with: lsof -iTCP -sTCP:LISTEN -n -P | grep -E "9[0-3][0-9]{2}")\n` +
                 "  • Host is unreachable\n" +
                 "  • Roon Core is not running\n" +
-                "  • Network/firewall blocking connection"
+                "  • Network/firewall blocking connection",
             );
             process.exit(1);
           } else {
             process.exit(1);
           }
-        }
+        },
       });
 
       Logger.debug("ws_connect call returned (connection initiated asynchronously)");
@@ -299,7 +299,7 @@ async function main(): Promise<void> {
             "If discovery continues to fail, verify the port with:\n" +
             `  lsof -iTCP -sTCP:LISTEN -n -P | grep -E "9[0-3][0-9]{2}"\n` +
             "\n" +
-            "Then use: npm start -- --core <IP> --port <PORT>"
+            "Then use: npm start -- --core <IP> --port <PORT>",
         );
         process.exit(1);
       }

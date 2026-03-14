@@ -6,7 +6,7 @@ export class BrowseService {
     private browseApi: typeof RoonApiBrowse.prototype,
     private imageConfig: ImageConfig,
     private coreIp: string,
-    private roonPort: number
+    private roonPort: number,
   ) {}
 
   async browse(opts: any): Promise<BrowseResult> {
@@ -38,7 +38,7 @@ export class BrowseService {
       subtitle: item.subtitle,
       itemKey: item.item_key,
       hint: item.hint,
-      artworkUrl: item.image_key ? this.buildImageUrl(item.image_key) : undefined
+      artworkUrl: item.image_key ? this.buildImageUrl(item.image_key) : undefined,
     }));
   }
 }

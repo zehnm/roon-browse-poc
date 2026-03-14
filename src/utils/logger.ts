@@ -43,7 +43,7 @@ export class Logger {
     const table = new Table({
       head: [chalk.bold("Zone ID"), chalk.bold("Display Name")],
       colWidths: [36, 40],
-      wordWrap: true
+      wordWrap: true,
     });
     zones.forEach((zone) => {
       table.push([zone.zone_id, zone.display_name]);
@@ -60,10 +60,10 @@ export class Logger {
         chalk.bold("Title"),
         chalk.bold("Subtitle"),
         chalk.bold("Type"),
-        chalk.bold("Artwork URL")
+        chalk.bold("Artwork URL"),
       ],
       colWidths: [4, 30, 25, 12, 55],
-      wordWrap: true
+      wordWrap: true,
     });
 
     items.forEach((item, index) => {
@@ -72,7 +72,7 @@ export class Logger {
         item.title || "-",
         item.subtitle || "-",
         chalk.cyan(item.hint || "unknown"),
-        item.artworkUrl ? chalk.blue(item.artworkUrl) : chalk.gray("(none)")
+        item.artworkUrl ? chalk.blue(item.artworkUrl) : chalk.gray("(none)"),
       ]);
     });
 

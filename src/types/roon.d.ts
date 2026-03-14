@@ -1,17 +1,23 @@
 declare module "node-roon-api" {
+  export interface RoonExtensionDescription {
+    extension_id: string;
+    display_name: string;
+    display_version: string;
+    publisher: string;
+    email: string;
+    website?: string;
+  }
+
+  export interface RoonApiOptions extends RoonExtensionDescription {
+    log_level?: "none" | "all";
+    core_paired?: (core: RoonCore) => void;
+    core_unpaired?: (core: RoonCore) => void;
+    core_found?: (core: RoonCore) => void;
+    core_lost?: (core: RoonCore) => void;
+  }
+
   class RoonApi {
-    constructor(options: {
-      extension_id: string;
-      display_name: string;
-      display_version: string;
-      publisher: string;
-      email: string;
-      website?: string;
-      core_found?: (core: RoonCore) => void;
-      core_lost?: (core: RoonCore) => void;
-      core_paired?: (core: RoonCore) => Promise<void>;
-      core_unpaired?: (core: RoonCore) => void;
-    });
+    constructor(options: RoonApiOptions);
     init_services(opts: { required_services?: unknown[]; provided_services?: unknown[] }): void;
     start_discovery(): void;
     ws_connect(opts: { host: string; port: number; onclose?: () => void }): void;
@@ -62,7 +68,7 @@ declare module "node-roon-api-image" {
         height?: number;
         format?: string;
       },
-      cb: (err: string | false, contentType: string, buffer: Buffer) => void
+      cb: (err: string | false, contentType: string, buffer: Buffer) => void,
     ): void;
   }
   export default RoonApiImage;
